@@ -1,0 +1,18 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    // The only purpose of adding this configuration is to specify "--no-cov". If this
+    // is not done, VS Code does not stop at breakpoints when debugging tests. See:
+    // https://code.visualstudio.com/docs/python/testing#_pytest-configuration-settings
+    {
+      "name": "Debug Tests",
+      "type": "python",
+      "request": "test",
+      "console": "internalConsole",
+      "env": { "PYTEST_ADDOPTS": "--no-cov" }
+    }
+  ]
+}

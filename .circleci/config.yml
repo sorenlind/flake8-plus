@@ -1,0 +1,201 @@
+version: 2.1
+
+orbs:
+  codecov: codecov/codecov@1.2.4
+  gh: circleci/github-cli@1.0
+
+workflows:
+  workflow:
+    jobs:
+      - checkout:
+          name: Checkout
+          context: Default
+          filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+      - lint:
+          name: Lint and check spelling
+          context: Default
+          requires:
+            - Checkout
+          filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+      - test:
+          name: Run tests
+          context: Default
+          requires:
+            - Checkout
+          filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+      - build:
+          name: Build
+          context: Default
+          requires:
+            - Checkout
+          filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+      - upload:
+          name: Upload
+          context: Default
+          requires:
+            - Lint and check spelling
+            - Run tests
+            - Build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+
+jobs:
+  checkout:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  lint:
+    docker:
+      - image: cimg/python:3.10-node
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install pdftotext and enchant
+          command: |
+            sudo apt update
+            sudo apt install build-essential libpoppler-cpp-dev pkg-config enchant-2
+      - run:
+          name: Install cSpell
+          command: sudo npm install cspell --global
+      - run:
+          name: Install markdownlint
+          command: sudo npm install markdownlint-cli2 --global
+      - run:
+          name: Install pyright
+          command: sudo npm install pyright --global
+      - run:
+          name: Upgrade pip
+          command: pip3 install --upgrade pip
+      - run:
+          name: Install package and dev extras
+          command: pip3 install ."[dev]"
+      - run:
+          name: Install Voight-Kampff
+          command: pip3 install voight-kampff
+      - run:
+          name: Markdownlint
+          command: vk markdownlint
+      - run:
+          name: Pyright
+          command: vk pyright
+      - run:
+          name: Pylint
+          command: vk pylint
+      - run:
+          name: Black
+          command: vk black
+      - run:
+          name: Pydocstyle
+          command: vk pydocstyle
+      - run:
+          name: Flake8
+          command: vk flake8
+      - run:
+          name: Bandit
+          command: vk bandit
+      - run:
+          name: isort
+          command: vk isort
+      - run:
+          name: cSpell
+          command: vk cspell
+      - run:
+          name: Pylint spelling
+          command: vk pylint-spelling
+
+  test:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install pdftotext and enchant
+          command: |
+            sudo apt update
+            sudo apt install build-essential libpoppler-cpp-dev pkg-config enchant-2
+      - run:
+          name: Upgrade pip
+          command: pip3 install --upgrade pip
+      - run:
+          name: Install tox and coverage
+          command: pip3 install tox coverage
+      - run:
+          name: Test
+          command: tox
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results/html
+      - codecov/upload:
+          file: test-results/cov.xml
+
+  build:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Upgrade pip
+          command: pip3 install --upgrade pip
+      - run:
+          name: Install build
+          command: pip install build
+      - run:
+          name: Substitute version
+          command: |
+            PACKAGE_VERSION=$(sed 's/^v//' \<<< ${CIRCLE_TAG:-0.0.0})
+            sed -i "s/0.0.0/$PACKAGE_VERSION/" ./flake8_plus/version.py
+      - run:
+          name: Check version number
+          command: python setup.py verify
+      - run:
+          name: Build
+          command: |
+            python3 -m build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  upload:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - gh/setup
+      - attach_workspace:
+          at: .
+      - run:
+          name: Upgrade pip
+          command: pip3 install --upgrade pip
+      - run:
+          name: Install twine
+          command: pip install twine
+      - run:
+          name: Upload
+          command: |
+            twine upload dist/*
+      - run:
+          name: Create release
+          command: |
+            echo Creating release
+            gh release create ${CIRCLE_TAG} ./dist/*.gz --title ${CIRCLE_TAG} --notes "$(git log `git tag --sort=-committerdate | head -1`...`git tag --sort=-committerdate | head -2 | tail -1` --pretty=format:"%h - **%s**%n%n%b")"

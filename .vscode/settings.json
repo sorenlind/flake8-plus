@@ -1,0 +1,53 @@
+{
+  "editor.rulers": [88],
+  "[git-commit]": { "editor.rulers": [50, 72] },
+
+  "files.exclude": {
+    "**/.git": true,
+    "**/.mypy_cache": true,
+    "**/.DS_Store": true,
+    "**/*.pyc": true,
+    "**/__pycache__": true,
+    "**/.tox": true,
+    "**/*.egg-info": true,
+    "**/.eggs": true,
+    "**/.pytest_cache": true,
+    "**/.ipynb_checkpoints": true
+  },
+
+  "autoDocstring.startOnNewLine": true,
+
+  "python.analysis.typeCheckingMode": "basic",
+
+  "python.formatting.provider": "black",
+
+  "python.linting.enabled": true,
+  "python.linting.ignorePatterns": [".vscode/*.py", "**/site-packages/**/*.py"],
+  "python.linting.banditEnabled": true,
+  "python.linting.banditArgs": ["-c=.bandit"],
+  "python.linting.flake8Enabled": true,
+  "python.linting.flake8Path": "flake8",
+  "python.linting.pycodestyleEnabled": false,
+  "python.linting.pydocstyleEnabled": true,
+  "python.linting.pylintEnabled": true,
+  "python.linting.pylintCategorySeverity.convention": "Warning",
+  "python.linting.pylintCategorySeverity.refactor": "Information",
+
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": [
+    "--exitfirst",
+    "--verbose",
+    "--cov=./flake8_plus",
+    "--cov-report=xml:test-results/cov.xml",
+    "--cov-report=html:test-results/html"
+  ],
+
+  "[markdown]": {
+    "editor.wordWrap": "off",
+    "editor.renderWhitespace": "all",
+    "editor.acceptSuggestionOnEnter": "off",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "coverage-gutters.coverageFileNames": ["test-results/cov.xml"],
+  "coverage-gutters.coverageReportFileName": "test-results/html/index.html"
+}
