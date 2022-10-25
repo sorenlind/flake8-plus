@@ -1,0 +1,21 @@
+[flake8]
+max-line-length=88
+ignore=
+    E203,   # whitespace before ‘:’
+    W503,   # line break before binary operator
+    ANN101, # missing type annotation for self in method
+    ANN102, # missing type annotation for cls in classmethod
+    E741,   # allow variable names I, O and l (but I and O still prevented by pylint)
+    ANN401, # allow using the Any type hint
+    E501,   # Similar to Pylint line-too-long but Pylint can ignore string literals
+exclude=
+    .git,
+    __pycache__,
+    .tox,
+    .vscode,
+    .eggs,
+    build,
+    dist,
+    tests/case_files/**/*.py
+# Allow methods without return to not specify return type
+suppress-none-returning=True
