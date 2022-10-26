@@ -1,5 +1,11 @@
 # Flake8-plus
 
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/sorenlind/flake8-plus/tree/main.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/sorenlind/flake8-plus/tree/main)
+[![codecov](https://img.shields.io/codecov/c/github/sorenlind/flake8-plus?token=8ULWSRBPNC)](https://codecov.io/gh/sorenlind/flake8-plus)
+[![license](https://black.readthedocs.io/en/stable/_static/license.svg)](https://github.com/sorenlind/flake8-plus/blob/main/LICENSE)
+[![pypi](https://img.shields.io/pypi/v/flake8-plus)](https://pypi.org/project/flake8-plus/)
+[![black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 Flake8-plus is a plugin for [Flake8](https://github.com/PyCQA/flake8) that detects
 incorrect amounts of vertical whitespace before the first toplevel `import` statement.
 By default, the plugin issues a warning if there are blank lines immediately preceding
