@@ -1,4 +1,4 @@
-"""The flake8-plus visitor."""
+"""Exception classes raised by various operations within pylint."""
 import ast
 from typing import Any
 
@@ -6,12 +6,12 @@ from ..config import Config
 from ..problem import Problem
 
 
-class PLU100Visitor(ast.NodeVisitor):
-    """Visitor class for the PLU100 rule."""
+class PLU001Visitor(ast.NodeVisitor):
+    """Visitor class for the PLU001 rule."""
 
     def __init__(self, lines: list[str], config: Config):
         """
-        Initialize a PLU100Visitor instance.
+        Initialize a PLU001Visitor instance.
 
         Args:
             lines (list[str]): The physical lines.
@@ -43,7 +43,7 @@ class PLU100Visitor(ast.NodeVisitor):
             actual = self._compute_blank_before(node.lineno)
             if actual != self.config.blanks_before_imports:
                 message = _build_message(actual, self.config.blanks_before_imports)
-                problem = Problem(node.lineno, node.col_offset, "PLU100", message)
+                problem = Problem(node.lineno, node.col_offset, "PLU001", message)
                 self.problems.append(problem)
         elif hasattr(node, "end_lineno") and (node.end_lineno is not None):
             self._last_end = node.end_lineno
@@ -52,9 +52,13 @@ class PLU100Visitor(ast.NodeVisitor):
         if line_number <= (self._last_end + 1):
             return 0
 
-        line_numbers = range(self._last_end + 1, line_number)
-        blanks = [l for l in line_numbers if not self._lines[l - 1].strip()]
-        return len(blanks)
+        indices_reversed = reversed(range(self._last_end, line_number - 1))
+        n_blanks = 0
+        for index in indices_reversed:
+            if self._lines[index].strip():
+                break
+            n_blanks += 1
+        return n_blanks
 
 
 def _build_message(blanks_actual: int, blanks_expected: int) -> str:

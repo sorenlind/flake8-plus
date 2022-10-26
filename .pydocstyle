@@ -9,3 +9,4 @@ add-ignore=
     D301  # Use r""" if any backslashes in a docstring
 
 match = .*\.py
+match-dir = ^(?!(case_files|build))[^\.].*

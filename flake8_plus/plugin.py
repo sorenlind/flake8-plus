@@ -9,7 +9,7 @@ from flake8.options.manager import OptionManager
 from . import defaults
 from .config import Config
 from .version import VERSION
-from .visitors.plu100_visitor import PLU100Visitor
+from .visitors.plu001_visitor import PLU001Visitor
 
 
 class Plugin:
@@ -18,7 +18,7 @@ class Plugin:
     name = "flake8-plus"
     version = VERSION
     visitors = [
-        PLU100Visitor,
+        PLU001Visitor,
     ]
 
     def __init__(self, tree: ast.AST, lines: list[str]):
