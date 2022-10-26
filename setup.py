@@ -56,6 +56,7 @@ setup(
     version=VERSION,
     description="Flake8 plugin adding PEP8-compliant vertical whitespacing rules",
     long_description=LONG_DESCRIPTION,
+    long_description_content_type="text/markdown",
     author="Soren Kristiansen",
     author_email="sorenlind@mac.com",
     url="https://github.com/sorenlind/flake8-plus",
