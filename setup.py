@@ -104,7 +104,6 @@ setup(
     entry_points={
         "flake8.extension": [
             "PLU = flake8_plus:Plugin",
-            # "PLU = flake8_plus:some_func",
         ],
     },
 )
