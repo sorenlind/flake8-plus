@@ -1,12 +1,41 @@
 """Exception classes raised by various operations within pylint."""
+# pylint: disable=too-few-public-methods
 import ast
 from typing import Any
 
 from ..config import Config
 from ..problem import Problem
+from .base_visitor import BaseVisitor
 
 
-class PLU001Visitor(ast.NodeVisitor):
+class PLU001Problem(Problem):
+    """Problem 001: Number of blank lines before first import."""
+
+    code = "PLU001"
+    format_ = "expected {} blank lines before first import, found {}"
+
+    def __init__(  # pylint: disable=unused-argument
+        self,
+        line_number: int,
+        col_offset: int,
+        blanks_actual: int,
+        blanks_expected: int,
+        **kwargs: dict[str, Any],
+    ):
+        """
+        Initialize a `PLU001Problem` instance.
+
+        Args:
+            line_number (int): The line number.
+            col_offset (int): The column offset.
+            blanks_actual (int): Number of actual blanks before first import.
+            blanks_expected (int): Number of expected blanks before first import.
+        """
+        message = PLU001Problem.format_.format(blanks_expected, blanks_actual)
+        super().__init__(line_number, col_offset, message)
+
+
+class PLU001Visitor(BaseVisitor):
     """Visitor class for the PLU001 rule."""
 
     def __init__(self, lines: list[str], config: Config):
@@ -17,50 +46,54 @@ class PLU001Visitor(ast.NodeVisitor):
             lines (list[str]): The physical lines.
             config (Config): Configuration instance for the plugin and visitor.
         """
-        self._last_end: int = 0
         self._previous_import = False
-        self.problems: list[Problem] = []
-        self._lines = lines
-        self.config = config
+        super().__init__(lines, config)
 
-    def visit(self, node: ast.AST) -> Any:
+    def visit_Import(self, node: ast.Import) -> Any:
         """
-        Visit the specified node.
+        Visit an `Import` node.
 
         Args:
-            node (ast.AST): The node to visit.
+            node (ast.Import): The node to visit.
 
         Returns:
-            Any: The value returned by the base class `visit` method.
+            Any: The result of calling `generic_visit`.
         """
-        if not self._previous_import:
-            self._process_node(node)
-        return super().visit(node)
+        # pylint: disable=invalid-name
+        self._process_import(node)
+        return self.generic_visit(node)
 
-    def _process_node(self, node: ast.AST):
-        if isinstance(node, ast.Import | ast.ImportFrom):
-            self._previous_import = True
-            actual = self._compute_blank_before(node.lineno)
-            if actual != self.config.blanks_before_imports:
-                message = _build_message(actual, self.config.blanks_before_imports)
-                problem = Problem(node.lineno, node.col_offset, "PLU001", message)
-                self.problems.append(problem)
-        elif hasattr(node, "end_lineno") and (node.end_lineno is not None):
-            self._last_end = node.end_lineno
+    def visit_ImportFrom(self, node: ast.ImportFrom) -> Any:
+        """
+        Visit an `ImportFrom` node.
 
-    def _compute_blank_before(self, line_number: int) -> int:
-        if line_number <= (self._last_end + 1):
-            return 0
+        Args:
+            node (ast.Import): The node to visit.
 
-        indices_reversed = reversed(range(self._last_end, line_number - 1))
-        n_blanks = 0
-        for index in indices_reversed:
-            if self._lines[index].strip():
-                break
-            n_blanks += 1
-        return n_blanks
+        Returns:
+            Any: The result of calling `generic_visit`.
+        """
+        # pylint: disable=invalid-name
+        self._process_import(node)
+        return self.generic_visit(node)
 
+    def _process_import(self, node: ast.AST):
+        if self._previous_import:
+            return
 
-def _build_message(blanks_actual: int, blanks_expected: int) -> str:
-    format_ = "expected {} blank lines before first import, found {}"
-    return format_.format(blanks_expected, blanks_actual)
+        self._previous_import = True
+        if node.col_offset != 0:
+            # Either a non-top-level import, or there are multiple
+            # statements on one line.
+            return
+
+        actual = self.compute_blanks_before(node)
+
+        if actual != self.config.blanks_before_imports:
+            problem = PLU001Problem(
+                node.lineno,
+                node.col_offset,
+                actual,
+                self.config.blanks_before_imports,
+            )
+            self.problems.append(problem)

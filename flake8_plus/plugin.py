@@ -44,7 +44,7 @@ class Plugin:
             visitor = cls(self._lines, Plugin.config)
             visitor.visit(self._tree)
             for p in visitor.problems:
-                yield p.line_number, p.col_offset, p.formatted_message, type(self)
+                yield p.line_number, p.col_offset, p.message_with_code, type(self)
 
     @staticmethod
     def add_options(option_manager: OptionManager) -> None:  # pragma: no cover

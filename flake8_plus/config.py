@@ -11,6 +11,6 @@ class Config:
 
         Args:
             blanks_before_imports (int): Number of blanks line expected before first
-            import statements.
+                import statements.
         """
         self.blanks_before_imports = blanks_before_imports
