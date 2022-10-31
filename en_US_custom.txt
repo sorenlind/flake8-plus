@@ -3,6 +3,7 @@ ast
 BaseVisitor
 config
 docstring
+ExceptHandler
 ParameterSet
 PLU
 pragma
