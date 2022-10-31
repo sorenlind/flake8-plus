@@ -3,7 +3,6 @@
 import ast
 from typing import Any
 
-from ..config import Config
 from ..exceptions import MultipleStatementsError
 from ..problem import Problem
 from .base_visitor import BaseVisitor
@@ -39,36 +38,19 @@ class PLU002Problem(Problem):
 class PLU002Visitor(BaseVisitor):
     """Visitor class for the PLU002 rule."""
 
-    def __init__(self, lines: list[str], config: Config):
+    def visit_Return(self, node: ast.Return) -> Any:
         """
-        Initialize a PLU002Visitor instance.
+        Visit a `Return` node.
 
         Args:
-            lines (list[str]): The physical lines.
-            config (Config): Configuration instance for the plugin and visitor.
-        """
-        self._last_end: int = 0
-        super().__init__(lines, config)
-
-    def visit(self, node: ast.AST) -> Any:
-        """
-        Visit the specified node.
-
-        Args:
-            node (ast.AST): The node to visit.
+            node (ast.Return): The node to visit.
 
         Returns:
-            Any: The value returned by the base class `visit` method.
+            Any: The result of calling `generic_visit`.
         """
-        self._process_node(node)
-        return super().visit(node)
-
-    def _process_node(self, node: ast.AST):
-        if isinstance(node, ast.Return):
-            try:
-                actual = self.compute_blanks_before(node)
-            except MultipleStatementsError:
-                return
+        # pylint: disable=invalid-name
+        try:
+            actual = self.compute_blanks_before(node)
             if actual != self.config.blanks_before_return:
                 problem = PLU002Problem(
                     node.lineno,
@@ -77,5 +59,6 @@ class PLU002Visitor(BaseVisitor):
                     self.config.blanks_before_return,
                 )
                 self.problems.append(problem)
-        elif hasattr(node, "end_lineno") and (node.end_lineno is not None):
-            self._last_end = node.end_lineno
+        except MultipleStatementsError:
+            pass
+        return self.generic_visit(node)
