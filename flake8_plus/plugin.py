@@ -10,6 +10,7 @@ from . import defaults
 from .config import Config
 from .version import VERSION
 from .visitors.plu001_visitor import PLU001Visitor
+from .visitors.plu002_visitor import PLU002Visitor
 
 
 class Plugin:
@@ -19,6 +20,7 @@ class Plugin:
     version = VERSION
     visitors = [
         PLU001Visitor,
+        PLU002Visitor,
     ]
 
     def __init__(self, tree: ast.AST, lines: list[str]):
@@ -59,7 +61,17 @@ class Plugin:
             "(Default: %(default)s)",
         )
 
+        option_manager.add_option(
+            "--blanks-before-return",
+            type="int",
+            metavar="n",
+            default=defaults.BLANKS_BEFORE_RETURN,
+            parse_from_config=True,
+            help="Expected number of blank lines before return statement. "
+            "(Default: %(default)s)",
+        )
+
     @classmethod
     def parse_options(cls, options: Namespace) -> None:  # pragma: no cover
         """Parse the custom configuration options given to flake8."""
-        cls.config = Config(options.blanks_before_imports)
+        cls.config = Config(options.blanks_before_imports, options.blanks_before_return)
