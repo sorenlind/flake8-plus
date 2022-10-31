@@ -1,0 +1,28 @@
+[
+  {
+    "filename": "1_blank.py",
+    "cases": [
+      {
+        "expectation": { "blanks_expected": 0 },
+        "problems": [{ "line_number": 4, "col_offset": 0, "blanks_actual": 1 }]
+      },
+      {
+        "expectation": { "blanks_expected": 1 },
+        "problems": []
+      }
+    ]
+  },
+  {
+    "filename": "no_blanks.py",
+    "cases": [
+      {
+        "expectation": { "blanks_expected": 0 },
+        "problems": []
+      },
+      {
+        "expectation": { "blanks_expected": 1 },
+        "problems": [{ "line_number": 3, "col_offset": 0, "blanks_actual": 0 }]
+      }
+    ]
+  }
+]

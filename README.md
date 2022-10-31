@@ -7,10 +7,10 @@
 [![black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Flake8-plus is a plugin for [Flake8](https://github.com/PyCQA/flake8) that detects
-incorrect amounts of vertical whitespace before the first toplevel `import` statement
-and before `return` statements. The plugin can be configured to expect any number of
-blank lines. By default, the plugin expects no blank lines before both `import` and
-`return`.
+incorrect amounts of vertical whitespace before the first toplevel `import` statement,
+before `return` statements and before `except`. The plugin can be configured to expect
+any number of blank lines. By default, the plugin expects no blank lines before both the
+`import` and `return` statements, and the `except` keyword.
 
 ## Installation
 
@@ -31,11 +31,11 @@ $ flake8 --version
 ## Configuration
 
 You can set the required number of blank lines before the first `import` as well as the
-number of blank lines required before a `return`. This can be done from the command
-line:
+number of blank lines required before a `return` and before `except`. This can be done
+from the command line:
 
 ```shell
-$ flake8 --blanks-before-imports 1 --blanks-before-return 1
+$ flake8 --blanks-before-imports 1 --blanks-before-return 1 --blanks-before-except 1
 ```
 
 Or from one of the `setup.cfg`, `tox.ini`, or `.flake8` files:
@@ -44,6 +44,7 @@ Or from one of the `setup.cfg`, `tox.ini`, or `.flake8` files:
 [flake8]
 blanks-before-imports=1
 blanks-before-return=1
+blanks-before-except=1
 ```
 
 ## Why no blank lines?
@@ -86,9 +87,27 @@ October 2022).
 Since zero blank lines is the style used most frequently, Flake8-plus uses that as that
 as the default.
 
+### Before `except`
+
+Neither Black, Flake8 nor Pylint enforces a specific number of blank lines preceding
+`except`. However, they all use zero blank lines more frequently than they use any other
+number of blanks. The table below shows the frequency of the number of blank lines
+before an `except` statement in the code bases for Black, Flake8 and Pylint (as of
+October 2022).
+
+| Package | Total `except`s | 0 blanks | 1 blank | 2 blanks | Folder        |
+| ------- | --------------: | -------: | ------: | -------: | ------------- |
+| Black   |              71 |       64 |       7 |        0 | `src`         |
+| Flake8  |              26 |       26 |       0 |        0 | `src/flake8/` |
+| Pylint  |             285 |      283 |       2 |        0 | `pylint`      |
+
+Since zero blank lines is the style used most frequently, Flake8-plus uses that as that
+as the default.
+
 ## Reported problems
 
 | Code   |  Description                                                |
 | ------ | ----------------------------------------------------------- |
 | PLU001 | "expected {} blank lines before first import, found {}"     |
 | PLU002 | "expected {} blank lines before return statement, found {}" |
+| PLU003 | "expected {} blank lines before except, found {}"           |

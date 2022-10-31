@@ -10,6 +10,7 @@ class Config:
         self,
         blanks_before_imports: int = defaults.BLANKS_BEFORE_IMPORTS,
         blanks_before_return: int = defaults.BLANKS_BEFORE_RETURN,
+        blanks_before_except: int = defaults.BLANKS_BEFORE_EXCEPT,
     ):
         """
         Initialize a `Configuration` instance.
@@ -19,6 +20,8 @@ class Config:
                 import statements.
             blanks_before_return (int): Number of blanks line expected before return
                 statement.
+            blanks_before_except (int): Number of blanks line expected before except.
         """
         self.blanks_before_imports = blanks_before_imports
         self.blanks_before_return = blanks_before_return
+        self.blanks_before_except = blanks_before_except
