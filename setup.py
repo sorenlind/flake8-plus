@@ -44,10 +44,8 @@ class VerifyVersion(Command):
 def _validate_version(tag: Optional[str], version: str) -> bool:
     if not tag:
         return version == "0.0.0"
-
     if tag[0] != "v":
         return False
-
     return tag[1:] == version
 
 

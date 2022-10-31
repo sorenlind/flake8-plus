@@ -1,3 +1,4 @@
 """Default values."""
 
 BLANKS_BEFORE_IMPORTS = 0
+BLANKS_BEFORE_RETURN = 0

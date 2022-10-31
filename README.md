@@ -7,10 +7,10 @@
 [![black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Flake8-plus is a plugin for [Flake8](https://github.com/PyCQA/flake8) that detects
-incorrect amounts of vertical whitespace before the first toplevel `import` statement.
-By default, the plugin issues a warning if there are blank lines immediately preceding
-the first toplevel `import`. The plugin can be configured to expect any number of blank
-lines.
+incorrect amounts of vertical whitespace before the first toplevel `import` statement
+and before `return` statements. The plugin can be configured to expect any number of
+blank lines. By default, the plugin expects no blank lines before both `import` and
+`return`.
 
 ## Installation
 
@@ -30,11 +30,12 @@ $ flake8 --version
 
 ## Configuration
 
-You can set the required number of blank lines before the first `import`. This can be
-done from the command line:
+You can set the required number of blank lines before the first `import` as well as the
+number of blank lines required before a `return`. This can be done from the command
+line:
 
 ```shell
-$ flake8 --blanks-before-imports 1
+$ flake8 --blanks-before-imports 1 --blanks-before-return 1
 ```
 
 Or from one of the `setup.cfg`, `tox.ini`, or `.flake8` files:
@@ -42,16 +43,19 @@ Or from one of the `setup.cfg`, `tox.ini`, or `.flake8` files:
 ```ini
 [flake8]
 blanks-before-imports=1
+blanks-before-return=1
 ```
 
 ## Why no blank lines?
 
-Neither Black, Flake8 nor Pylint enforces a specific number of blank lines preceding the
-first `import` and consequently there seems to be no consensus or standard. The table
-below shows the frequency of the number of blank lines before the first toplevel
-`import` statement in the code bases for [Black](https://github.com/psf/black),
-[Flake8](https://github.com/PyCQA/flake8) and [Pylint](https://github.com/PyCQA/pylint)
-(as of October 2022).
+### Before `import`
+
+Neither [Black](https://github.com/psf/black), [Flake8](https://github.com/PyCQA/flake8)
+nor [Pylint](https://github.com/PyCQA/pylint) enforces a specific number of blank lines
+preceding the first `import` and consequently there seems to be no consensus or
+standard. The table below shows the frequency of the number of blank lines before the
+first toplevel `import` statement in the code bases for Black, Flake8 and Pylint (as of
+October 2022).
 
 | Package | Total files | 0 blanks | 1 blank | 2 blanks | Folder        |
 | ------- | ----------: | -------: | ------: | -------: | ------------- |
@@ -65,8 +69,26 @@ Pylint code does not consistently include module docstrings (thereby breaking
 `pylint(missing-module-docstring)`). For that reason, and also because this is a Flake8
 plugin, the plugin follows the style of Flake8 as the default.
 
+### Before `return`
+
+Neither Black, Flake8 nor Pylint enforces a specific number of blank lines preceding
+`return`. However, they all use zero blank lines more frequently than they use any
+other number of blanks. The table below shows the frequency of the number of blank
+lines before a `return` statement in the code bases for Black, Flake8 and Pylint (as of
+October 2022).
+
+| Package | Total `return`s | 0 blanks | 1 blank | 2 blanks | Folder        |
+| ------- | --------------: | -------: | ------: | -------: | ------------- |
+| Black   |             618 |      544 |      74 |        0 | `src`         |
+| Flake8  |             174 |      155 |      19 |        0 | `src/flake8/` |
+| Pylint  |            1941 |     1852 |      89 |        0 | `pylint`      |
+
+Since zero blank lines is the style used most frequently, Flake8-plus uses that as that
+as the default.
+
 ## Reported problems
 
-| Code   |  Description                                            |
-| ------ | ------------------------------------------------------- |
-| PLU001 | "expected {} blank lines before first import, found {}" |
+| Code   |  Description                                                |
+| ------ | ----------------------------------------------------------- |
+| PLU001 | "expected {} blank lines before first import, found {}"     |
+| PLU002 | "expected {} blank lines before return statement, found {}" |
