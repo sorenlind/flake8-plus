@@ -1,5 +1,6 @@
 """Base class for visitors used in Flake8-plus."""
 import ast
+from typing import Any
 
 from ..config import Config
 from ..exceptions import MultipleStatementsError
@@ -20,6 +21,21 @@ class BaseVisitor(ast.NodeVisitor):
         self.problems: list[Problem] = []
         self._lines = lines
         self.config = config
+        self._previous_node = None
+
+    def visit(self, node: ast.AST) -> Any:
+        """
+        Visit an `AST` instance.
+
+        Args:
+            node (ast.AST): The abstract syntax tree to visit.
+
+        Returns:
+            Any: The result of calling `visit` on the super class.
+        """
+        result = super().visit(node)
+        self._previous_node = node
+        return result
 
     def compute_blanks_before(self, node: ast.AST) -> int:
         """

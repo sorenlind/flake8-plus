@@ -49,16 +49,21 @@ class PLU002Visitor(BaseVisitor):
             Any: The result of calling `generic_visit`.
         """
         # pylint: disable=invalid-name
+        if not isinstance(self._previous_node, ast.FunctionDef | ast.ClassDef):
+            self._process_node(node)
+        return self.generic_visit(node)
+
+    def _process_node(self, node: ast.Return):
         try:
             actual = self.compute_blanks_before(node)
-            if actual != self.config.blanks_before_return:
-                problem = PLU002Problem(
-                    node.lineno,
-                    node.col_offset,
-                    actual,
-                    self.config.blanks_before_return,
-                )
-                self.problems.append(problem)
         except MultipleStatementsError:
-            pass
-        return self.generic_visit(node)
+            return
+
+        if actual != self.config.blanks_before_return:
+            problem = PLU002Problem(
+                node.lineno,
+                node.col_offset,
+                actual,
+                self.config.blanks_before_return,
+            )
+            self.problems.append(problem)
