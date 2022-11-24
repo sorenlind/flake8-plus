@@ -1,13 +1,22 @@
 [flake8]
 max-line-length=88
 ignore=
-    E203,   # Whitespace before ‘:’
-    W503,   # Line break before binary operator
-    ANN101, # Missing type annotation for self in method
-    ANN102, # Missing type annotation for cls in classmethod
-    E741,   # Allow variable names I, O and l (but I and O still prevented by pylint)
-    ANN401, # Allow using the Any type hint
-    E501,   # Too long lines, handled by Pylint
+    # Missing type annotation for self in method
+    ANN101,
+    # Missing type annotation for cls in classmethod
+    ANN102,
+    # Allow using the Any type hint
+    ANN401,
+    # Whitespace before ‘:’
+    E203,
+    # Similar to Pylint line-too-long but Pylint can ignore string literals
+    E501,
+    # Allow variable names I, O and l (but I and O still prevented by pylint)
+    E741,
+    # Allow not prefixing fixtures that do not return anything with '_'
+    PT004,
+    # Line break before binary operator
+    W503,
 exclude=
     .git,
     __pycache__,
