@@ -55,7 +55,7 @@ class Plugin:
         """Add custom configuration option(s) to flake8."""
         option_manager.add_option(
             "--blanks-before-imports",
-            type="int",
+            type=int,
             metavar="n",
             default=defaults.BLANKS_BEFORE_IMPORTS,
             parse_from_config=True,
@@ -65,7 +65,7 @@ class Plugin:
 
         option_manager.add_option(
             "--blanks-before-return",
-            type="int",
+            type=int,
             metavar="n",
             default=defaults.BLANKS_BEFORE_RETURN,
             parse_from_config=True,
@@ -75,7 +75,7 @@ class Plugin:
 
         option_manager.add_option(
             "--blanks-before-except",
-            type="int",
+            type=int,
             metavar="n",
             default=defaults.BLANKS_BEFORE_EXCEPT,
             parse_from_config=True,
