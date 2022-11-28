@@ -49,7 +49,9 @@ class PLU002Visitor(BaseVisitor):
             Any: The result of calling `generic_visit`.
         """
         # pylint: disable=invalid-name
-        if not isinstance(self._previous_node, ast.FunctionDef | ast.ClassDef):
+        if not isinstance(
+            self._previous_node, ast.AsyncFunctionDef | ast.ClassDef | ast.FunctionDef
+        ):
             self._process_node(node)
         return self.generic_visit(node)
 
