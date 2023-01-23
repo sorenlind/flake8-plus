@@ -1,4 +1,4 @@
-"""Exception classes raised by various operations within pylint."""
+"""Problem 001: Number of blank lines before first import."""
 # pylint: disable=too-few-public-methods
 import ast
 from typing import Any
