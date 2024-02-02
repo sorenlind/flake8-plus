@@ -37,7 +37,9 @@ def generate_bulk_cases(problem_cls: type[Problem]) -> list[ParameterSet]:
                 problem = problem_cls(**problem_dict, **expectation)
                 problems.add(_problem_to_tuple(problem))
             exp = ", ".join([f"{v} {k}" for (k, v) in expectation.items()])
-            id_ = f"{filename.stem} - {exp}".replace("_", " ")
+            if exp:
+                exp = f" - {exp}"
+            id_ = f"{filename.stem}{exp}".replace("_", " ")
             case = pytest.param(code, expectation, problems, id=id_)
             cases.append(case)
     return cases

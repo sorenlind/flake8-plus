@@ -1,0 +1,20 @@
+[
+  {
+    "filename": "code_in_comment.py",
+    "cases": [
+      {
+        "expectation": {},
+        "problems": [{ "line_number": 3, "col_offset": 4 }]
+      }
+    ]
+  },
+  {
+    "filename": "no_code_in_comment.py",
+    "cases": [
+      {
+        "expectation": {},
+        "problems": []
+      }
+    ]
+  }
+]

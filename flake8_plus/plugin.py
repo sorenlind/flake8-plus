@@ -12,6 +12,7 @@ from .version import VERSION
 from .visitors.plu001_visitor import PLU001Visitor
 from .visitors.plu002_visitor import PLU002Visitor
 from .visitors.plu003_visitor import PLU003Visitor
+from .visitors.plu101_visitor import PLU101Visitor
 
 
 class Plugin:
@@ -23,6 +24,7 @@ class Plugin:
         PLU001Visitor,
         PLU002Visitor,
         PLU003Visitor,
+        PLU101Visitor,
     ]
 
     def __init__(self, tree: ast.AST, lines: list[str]):
